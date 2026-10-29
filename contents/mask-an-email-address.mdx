@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Mask an email address for logs
+---
+
+**JavaScript version**
+
+```js maskEmail.js
+function maskEmail(address) { return `${address.slice(0, 1)}•••${address.slice(address.lastIndexOf('@'))}`; }
+
+```
+
+**TypeScript version**
+
+```ts maskEmail.ts
+function maskEmail(address: string): string { return `${address.slice(0, 1)}•••${address.slice(address.lastIndexOf('@'))}`; }
+```
+
+**Examples**
+
+```js examples.js
+maskEmail('ana.silva@example.com'); // 'a•••@example.com'
+maskEmail('a@example.com'); // 'a•••@example.com'
+```
+
+**Notes**
+
+- Masking reduces exposure in logs; it is not anonymization, and the domain stays visible.
+- The mask has a fixed width, so it does not reveal the length of the local part. Prefer logging a message or delivery identifier instead.

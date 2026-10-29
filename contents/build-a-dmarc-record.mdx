@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Build a DMARC record
+---
+
+**JavaScript version**
+
+```js dmarcRecord.js
+function dmarcRecord({ policy, rua }) { return ['v=DMARC1', `p=${policy}`, ...(rua ? [`rua=${rua}`] : [])].join('; '); }
+
+```
+
+**TypeScript version**
+
+```ts dmarcRecord.ts
+function dmarcRecord({ policy, rua }: { policy: 'none' | 'quarantine' | 'reject'; rua?: string }): string { return ['v=DMARC1', `p=${policy}`, ...(rua ? [`rua=${rua}`] : [])].join('; '); }
+```
+
+**Examples**
+
+```js examples.js
+dmarcRecord({ policy: 'none', rua: 'mailto:dmarc-reports@your-verified-domain.example' }); // 'v=DMARC1; p=none; rua=mailto:dmarc-reports@your-verified-domain.example'
+dmarcRecord({ policy: 'reject' }); // 'v=DMARC1; p=reject'
+```
+
+**Notes**
+
+- Publish the value as a TXT record at `_dmarc.<your-domain>`; `v=DMARC1` must come first (RFC 7489). Start with `p=none` and aggregate reports, then move to `quarantine` and `reject` once SPF or DKIM alignment holds.
+- Oveyon’s `POST /v1/domains` returns the SPF, DKIM and DMARC records to publish for a sending domain; prefer those values when they are available.

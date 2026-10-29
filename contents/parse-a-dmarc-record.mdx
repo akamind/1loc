@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Parse a DMARC record
+---
+
+**JavaScript version**
+
+```js parseDmarc.js
+function parseDmarc(record) { return Object.fromEntries(record.split(';').map(tag => tag.trim()).filter(Boolean).map(tag => [tag.slice(0, tag.indexOf('=')).trim().toLowerCase(), tag.slice(tag.indexOf('=') + 1).trim()])); }
+
+```
+
+**TypeScript version**
+
+```ts parseDmarc.ts
+function parseDmarc(record: string): Record<string, string> { return Object.fromEntries(record.split(';').map(tag => tag.trim()).filter(Boolean).map(tag => [tag.slice(0, tag.indexOf('=')).trim().toLowerCase(), tag.slice(tag.indexOf('=') + 1).trim()])); }
+```
+
+**Examples**
+
+```js examples.js
+parseDmarc('v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; adkim=s'); // { v: 'DMARC1', p: 'quarantine', rua: 'mailto:dmarc@example.com', adkim: 's' }
+parseDmarc('v=DMARC1;p=reject;'); // { v: 'DMARC1', p: 'reject' }
+```
+
+**Notes**
+
+- Tag names are lowercased; values are kept as published. Unknown tags are returned, not validated.
+- Receivers discard a record whose first tag is not `v=DMARC1` or that has a tag without `=` (RFC 7489). Check that `p` is present: it is the policy receivers apply.

@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Build an idempotency key from an event
+---
+
+**JavaScript version**
+
+```js idempotencyKey.js
+function idempotencyKey({ scope, id, version }) { return [scope, id, version].map(part => encodeURIComponent(String(part))).join(':'); }
+
+```
+
+**TypeScript version**
+
+```ts idempotencyKey.ts
+function idempotencyKey({ scope, id, version }: { scope: string; id: string | number; version: string | number }): string { return [scope, id, version].map(part => encodeURIComponent(String(part))).join(':'); }
+```
+
+**Examples**
+
+```js examples.js
+idempotencyKey({ scope: 'order-confirmation', id: '8812', version: 1 }); // 'order-confirmation:8812:1'
+idempotencyKey({ scope: 'welcome', id: 'user:42', version: 2 }); // 'welcome:user%3A42:2'
+```
+
+**Notes**
+
+- Derive the key from the business event, never from time or randomness: a retry must send the same key.
+- Oveyon accepts 1–190 printable ASCII characters without spaces, as the `Idempotency-Key` header or the `idempotencyKey` body field. Encoding keeps every part inside that set.

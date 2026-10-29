@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Compute a backoff delay with full jitter
+---
+
+**JavaScript version**
+
+```js backoffMs.js
+function backoffMs({ attempt, baseMs, capMs, random }) { return Math.round(random * Math.min(capMs, baseMs * 2 ** attempt)); }
+
+```
+
+**TypeScript version**
+
+```ts backoffMs.ts
+function backoffMs({ attempt, baseMs, capMs, random }: { attempt: number; baseMs: number; capMs: number; random: number }): number { return Math.round(random * Math.min(capMs, baseMs * 2 ** attempt)); }
+```
+
+**Examples**
+
+```js examples.js
+backoffMs({ attempt: 3, baseMs: 500, capMs: 30000, random: 0.5 }); // 2000
+backoffMs({ attempt: 20, baseMs: 500, capMs: 30000, random: 0.999 }); // 29970
+```
+
+**Notes**
+
+- `random` is an input so the result is testable; pass `Math.random()` in production. Honor a `Retry-After` header when the server sends one.
+- Every attempt must reuse the same idempotency key: Oveyon deduplicates a saved key for 24 hours, so a late retry does not send twice.

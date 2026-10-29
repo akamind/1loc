@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Normalize an email address for comparison
+---
+
+**JavaScript version**
+
+```js normalizeEmail.js
+function normalizeEmail(address) { const value = address.trim(); const at = value.lastIndexOf('@'); return `${value.slice(0, at)}@${value.slice(at + 1).toLowerCase()}`; }
+
+```
+
+**TypeScript version**
+
+```ts normalizeEmail.ts
+function normalizeEmail(address: string): string { const value = address.trim(); const at = value.lastIndexOf('@'); return `${value.slice(0, at)}@${value.slice(at + 1).toLowerCase()}`; }
+```
+
+**Examples**
+
+```js examples.js
+normalizeEmail('  Ana.Silva@Example.COM '); // 'Ana.Silva@example.com'
+normalizeEmail('ANA@EXAMPLE.COM'); // 'ANA@example.com'
+```
+
+**Notes**
+
+- The local part is kept as typed: its case rules belong to the receiving server.
+- Provider-specific rules such as ignored dots or `+tags` are not applied. Do not merge accounts on this alone.

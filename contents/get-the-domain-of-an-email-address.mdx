@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Get the domain of an email address
+---
+
+**JavaScript version**
+
+```js emailDomain.js
+function emailDomain(address) { return address.slice(address.lastIndexOf('@') + 1).toLowerCase(); }
+
+```
+
+**TypeScript version**
+
+```ts emailDomain.ts
+function emailDomain(address: string): string { return address.slice(address.lastIndexOf('@') + 1).toLowerCase(); }
+```
+
+**Examples**
+
+```js examples.js
+emailDomain('Ana.Silva@Example.COM'); // 'example.com'
+emailDomain('"ana@team"@example.com'); // 'example.com'
+```
+
+**Notes**
+
+- The last `@` separates the domain, so a quoted local part containing `@` still works. This does not validate the address.
+- Domain names are case-insensitive. Oveyon’s disposable-domain lookup takes a domain like this one, so the full address never leaves your backend.

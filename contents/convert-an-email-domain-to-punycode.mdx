@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Convert an email domain to punycode
+---
+
+**JavaScript version**
+
+```js toAsciiAddress.js
+function toAsciiAddress(address) { const at = address.lastIndexOf('@'); return `${address.slice(0, at)}@${new URL(`http://${address.slice(at + 1)}`).hostname}`; }
+
+```
+
+**TypeScript version**
+
+```ts toAsciiAddress.ts
+function toAsciiAddress(address: string): string { const at = address.lastIndexOf('@'); return `${address.slice(0, at)}@${new URL(`http://${address.slice(at + 1)}`).hostname}`; }
+```
+
+**Examples**
+
+```js examples.js
+toAsciiAddress('ana@bücher.example'); // 'ana@xn--bcher-kva.example'
+toAsciiAddress('ana@EXAMPLE.com'); // 'ana@example.com'
+```
+
+**Notes**
+
+- Only the domain is converted. A non-ASCII local part (EAI) cannot be made ASCII this way.
+- Oveyon accepts ASCII addresses only: an international domain must be sent in its `xn--` form, anything else is refused with `address_not_ascii`.

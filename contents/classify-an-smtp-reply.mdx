@@ -1,0 +1,32 @@
+---
+category: Email
+contributors:
+    - akamind
+created: '2026-10-28'
+title: Classify an SMTP reply
+---
+
+**JavaScript version**
+
+```js classifySmtpReply.js
+function classifySmtpReply(reply) { const [, code, enhanced] = /^([2-5]\d{2})(?:[ -]([245]\.\d{1,3}\.\d{1,3}))?/.exec(reply); return { code: Number(code), enhanced: enhanced || null, outcome: { 2: 'success', 3: 'intermediate', 4: 'transient', 5: 'permanent' }[code[0]], retry: code[0] === '4' }; }
+
+```
+
+**TypeScript version**
+
+```ts classifySmtpReply.ts
+function classifySmtpReply(reply: string): { code: number; enhanced: string | null; outcome: string; retry: boolean } { const [, code, enhanced] = /^([2-5]\d{2})(?:[ -]([245]\.\d{1,3}\.\d{1,3}))?/.exec(reply) as RegExpExecArray; return { code: Number(code), enhanced: enhanced || null, outcome: ({ 2: 'success', 3: 'intermediate', 4: 'transient', 5: 'permanent' } as Record<string, string>)[code[0]], retry: code[0] === '4' }; }
+```
+
+**Examples**
+
+```js examples.js
+classifySmtpReply('550 5.1.1 The email account that you tried to reach does not exist'); // { code: 550, enhanced: '5.1.1', outcome: 'permanent', retry: false }
+classifySmtpReply('451 4.7.1 Try again later'); // { code: 451, enhanced: '4.7.1', outcome: 'transient', retry: true }
+```
+
+**Notes**
+
+- Reply classes follow RFC 5321: 2xx success, 3xx intermediate, 4xx transient, 5xx permanent. Enhanced codes (RFC 3463, class.subject.detail) refine the reason; servers may omit them.
+- The sending server retries transient replies, not your application. With Oveyon, act on the per-recipient state it reports — such as deferred or bounced — instead of parsing SMTP text yourself.
